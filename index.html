@@ -13,54 +13,71 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
+    <!-- creating a toggle for the light and dark navbar -->
+    <nav class="navbar navbar-expand-lg" :class="{'navbar-light bg-light': !useDarkNavbar, 'navbar-dark bg-dark':
+        useDarkNavbar}">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(link, index) in links" class="nav-item" :key="index">
-                     <!-- Now we are keeping track of the index and using it as unique identifier <li v-for="(link, index) in links" class="nav-item"></li> -->
+                <li v-for="(page, index) in pages" class="nav-item" :key="index">
+                    <!-- Now we are keeping track of the index and using it as unique identifier <li v-for="(link, index) in links" class="nav-item"></li> -->
                     <!-- v for= is a for loop to loop over the links <li v-for="link in links" class="nav-item"> -->
-                    <a class="nav-link" aria-current="page" :href="link.url"
-                        :title="`This link goes to the ${link.text} page`">{{link.text}} </a>
+                    <a class="nav-link" :class="{active: activePage == index}" aria-current="page" :href="page.link.url"
+                        :title="`This link goes to the ${page.link.text} page`"
+                        @click.prevent="activePage = index">{{page.link.text}} </a>
+                    <!-- <a class="nav-link activePage == index ? "active""  we would use a ternary to change the link to active w use vbind for classes with conditionals  -->
                     <!-- for binding links in vue use v-bind: or : for short hand v-bind:href="link.url">{-->
+                    <!-- v-on:click="" -->
+                    <!-- v-on shorthand @ v-bind shorthand : use v-on for action handlers and use v-bind for binding data to state -->
+
                 </li>
 
             </ul>
-
+            <form class="d-flex">
+                <button class="btn btn-primary" @click.prevent="useDarkNavbar = !useDarkNavbar"> toggle navbar </button>
+            </form>
         </div>
     </nav>
     <div id="content" class="container">
-        <h1>{{ pageTitle }}</h1>
-        <p>{{ pageInnards }}</p>
+        <h1>{{ pages[activePage].pageTitle }}</h1>
+        <p>{{ pages[activePage].content }}</p>
     </div>
+
     <script>
         Vue.createApp({
             data() {
                 return {
-                    links: [{
-                            text: "Home",
-                            url: "index.html"
+                    activePage: 0,
+                    useDarkNavbar: false,
+                    pages: [{
+                            link: {
+                                text: "Home",
+                                url: "index.html"
+                            },
+                            pageTitle: "Home Page",
+                            content: "this is the home content"
                         },
                         {
-                            text: "About",
-                            url: "about.html"
+                            link: {
+                                text: "About",
+                                url: "about.html"
+                            },
+                            pageTitle: "About Page",
+                            content: "this is the about content"
                         },
                         {
-                            text: "Contact",
-                            url: "contact.html"
+                            link: {
+                                text: "Contact",
+                                url: "contact.html"
+                            },
+                            pageTitle: "Contact Page",
+                            content: "this is the contact content"
                         }
-                    ]
+                    ],
                 }
             }
-        }).mount("nav");
-        Vue.createApp({
-            data() {
-                return {
-                    pageTitle: "Hello, Vue",
-                    pageInnards: "Welcome to the wonderful world of Vue"
-                }
-            }
-        }).mount("#content");
+        }).mount("body");
     </script>
 </body>
 
