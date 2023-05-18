@@ -17,8 +17,12 @@
     <!-- creating a toggle for the light and dark navbar -->
     <!-- <nav class="navbar navbar-expand-lg" :class="{'navbar-light bg-light': !useDarkNavbar, 'navbar-dark bg-dark':
         useDarkNavbar}" this example is an object within a string and may be difficult to understand but it works> -->
-    <nav class="navbar navbar-expand-lg" :class="navbarClasses">
-        <div class="container-fluid">
+    <!-- <nav class="navbar navbar-expand-lg" :class="navbarClasses"> use when using compute -->
+    <!-- <nav class="navbar navbar-expand-lg" :class="['navbar-dark', 'bg-dark']"> this is hard coded-->
+    <!-- using an array to bind classes in the nav bar -->
+    <!-- <nav class="navbar navbar-expand-lg" :class="[useDarkNavbar ? 'bg-dark' : 'bg-light']"> -->
+    <nav :class="[`navbar-${theme}`, `bg-${theme}`, 'navbar', 'navbar-expand-lg']">
+        <div class=" container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li v-for="(page, index) in pages" class="nav-item" :key="index">
@@ -36,7 +40,11 @@
 
             </ul>
             <form class="d-flex">
-                <button class="btn btn-primary" @click.prevent="useDarkNavbar = !useDarkNavbar"> toggle navbar </button>
+                <!-- <button class="btn btn-primary" @click.prevent="theme = theme == 'light' ? 'dark' : 'light'"> toggle navbar </button> -->
+                <!-- One way to do the toggle without computed -->
+                <button class="btn btn-primary" @click.prevent="changeTheme()"> toggle
+                    <!-- We are now using a function to create the toggle effect. we need to define the changeTheme function in the method area -->
+                    navbar </button>
             </form>
         </div>
     </nav>
@@ -47,20 +55,10 @@
 
     <script>
         Vue.createApp({
-            computed: {
-                navbarClasses() {
-                    return {
-                        "navbar-light": !this.useDarkNavbar,
-                        "bg-light": !this.useDarkNavbar,
-                        "navbar-dark": this.useDarkNavbar,
-                        "bg-dark": this.useDarkNavbar
-                    }
-                }
-            },
             data() {
                 return {
                     activePage: 0,
-                    useDarkNavbar: false,
+                    theme: "dark",
                     pages: [{
                             link: {
                                 text: "Home",
@@ -86,6 +84,15 @@
                             content: "this is the contact content"
                         }
                     ],
+                }
+            },
+            methods: {
+                changeTheme() {
+                    let theme = 'light';
+                    if (this.theme == 'light') {
+                        theme = 'dark';
+                    }
+                    this.theme = theme
                 }
             }
         }).mount("body");
