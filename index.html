@@ -15,8 +15,9 @@
 <body>
     <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
     <!-- creating a toggle for the light and dark navbar -->
-    <nav class="navbar navbar-expand-lg" :class="{'navbar-light bg-light': !useDarkNavbar, 'navbar-dark bg-dark':
-        useDarkNavbar}">
+    <!-- <nav class="navbar navbar-expand-lg" :class="{'navbar-light bg-light': !useDarkNavbar, 'navbar-dark bg-dark':
+        useDarkNavbar}" this example is an object within a string and may be difficult to understand but it works> -->
+    <nav class="navbar navbar-expand-lg" :class="navbarClasses">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -46,6 +47,16 @@
 
     <script>
         Vue.createApp({
+            computed: {
+                navbarClasses() {
+                    return {
+                        "navbar-light": !this.useDarkNavbar,
+                        "bg-light": !this.useDarkNavbar,
+                        "navbar-dark": this.useDarkNavbar,
+                        "bg-dark": this.useDarkNavbar
+                    }
+                }
+            },
             data() {
                 return {
                     activePage: 0,
