@@ -30,8 +30,11 @@
             </form>
         </div>
     </nav>
-<!-- Two ways to do components. This first way you put the hard code directly in. -->
-    <page-viewer page-title="Page Title 2" page-content="Page Content 2"> </page-viewer>
+    <!-- Two ways to do components. This first way you put the hard code directly in. -->
+    <!-- <page-viewer :page-title="pages[activePage].pageTitle" :page-content=pages[activePage].content> </page-viewer> -->
+    <page-viewer :page="pages[activePage]"></page-viewer>
+
+
 
     <script>
         let app = Vue.createApp({
@@ -77,11 +80,12 @@
             }
         });
         app.component("page-viewer", {
-            props: ["pageTitle", "pageContent"],
+            // props: ["pageTitle", "pageContent"], use with commented out section in html
+            props: ["page"],
             template: ` 
             <div class="container">
-                <h1>{{pageTitle}}</h1>
-                <p>{{pageContent}}</p>
+                <h1>{{page.pageTitle}}</h1>
+                <p>{{page.content}}</p>
             </div>
             `
         });
