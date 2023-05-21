@@ -13,27 +13,15 @@
 </head>
 
 <body>
-    <nav :class="[`navbar-${theme}`, `bg-${theme}`, 'navbar', 'navbar-expand-lg']">
-        <div class=" container-fluid">
-            <a class="navbar-brand" href="#">My Vue</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in pages" class="nav-item" :key="index">
-                    <a class="nav-link" :class="{active: activePage == index}" aria-current="page" :href="page.link.url"
-                        :title="`This link goes to the ${page.link.text} page`"
-                        @click.prevent="activePage = index">{{page.link.text}} </a>
-                </li>
 
-            </ul>
-            <form class="d-flex">
-                <button class="btn btn-primary" @click.prevent="changeTheme()"> toggle
-                    navbar </button>
-            </form>
-        </div>
-    </nav>
+    <navbar :pages="pages" :active-page="activePage" :nav-link-click="(index) => activePage = index"></navbar>
+    <!-- navbar is responsible for displaying the navbar  Keeping track of the theme as well as notifying the application when the user clicks a link -->
+    <!-- we have to bind our navbar component to the data componet to be able to grab that information. -->
+
     <!-- Two ways to do components. This first way you put the hard code directly in. -->
     <!-- <page-viewer :page-title="pages[activePage].pageTitle" :page-content=pages[activePage].content> </page-viewer> -->
     <page-viewer :page="pages[activePage]"></page-viewer>
-
+    <!-- page viewer is responsible for displaying the page infomration -->
 
 
     <script>
@@ -41,7 +29,7 @@
             data() {
                 return {
                     activePage: 0,
-                    theme: "dark",
+                    // theme was only for the nav bar so we put that data in the navbar data compoenent same with the method for the toggle
                     pages: [{
                             link: {
                                 text: "Home",
@@ -69,15 +57,6 @@
                     ],
                 }
             },
-            methods: {
-                changeTheme() {
-                    let theme = 'light';
-                    if (this.theme == 'light') {
-                        theme = 'dark';
-                    }
-                    this.theme = theme
-                }
-            }
         });
         app.component("page-viewer", {
             // props: ["pageTitle", "pageContent"], use with commented out section in html
@@ -89,6 +68,44 @@
             </div>
             `
         });
+        // We just moved our navbar into it's own component. Since we are using a back tick in our template we have to escape all the other ones with \
+        app.component("navbar", {
+            props: ["pages", "activePage", "navLinkClick"],
+            // props are read only so it will only read the current value not update it. data flows from parent to child and not the opposite. we need an event 
+            template: `
+                <nav :class="[\`navbar-\${theme}\`, \`bg-\${theme}\`, 'navbar', 'navbar-expand-lg']">
+                    <div class=" container-fluid">
+                        <a class="navbar-brand" href="#">My Vue</a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li v-for="(page, index) in pages" class="nav-item" :key="index">
+                                <a class="nav-link" :class="{active: activePage == index}" aria-current="page"
+                                    :href="page.link.url" :title="\`This link goes to the \${page.link.text} page\`"
+                                    @click.prevent="navLinkClick(index)">{{page.link.text}}</a>
+                            </li>
+
+                        </ul>
+                        <form class="d-flex">
+                            <button class="btn btn-primary" @click.prevent="changeTheme()"> toggle
+                                navbar </button>
+                        </form>
+                    </div>
+                </nav>
+            `,
+            data() {
+                return {
+                    theme: "dark",
+                }
+            },
+            methods: {
+                changeTheme() {
+                    let theme = 'light';
+                    if (this.theme == 'light') {
+                        theme = 'dark';
+                    }
+                    this.theme = theme
+                }
+            }
+        })
 
         app.mount("body");
     </script>
